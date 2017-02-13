@@ -1,0 +1,15 @@
+{
+    "name": "luisconcha/laccuser",
+    "description": "",
+    "authors": [
+        {
+            "name": "Luis Alberto Concha Curay",
+            "email": "luisconchacuray@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "LaccUser\\": ""
+        }
+    }
+}

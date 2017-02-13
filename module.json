@@ -1,0 +1,20 @@
+{
+  "name": "LaccUser",
+  "alias": "laccuser",
+  "description": "",
+  "keywords": [],
+  "active": 1,
+  "order": 0,
+  "providers": [
+    "LaccUser\\Providers\\LaccUserServiceProvider"
+  ],
+  "aliases": {},
+  "files": [
+    "start.php"
+  ],
+  "migration": {
+    "seeds": [
+      "LaccUserDatabaseSeeder"
+    ]
+  }
+}
