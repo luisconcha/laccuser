@@ -10,13 +10,13 @@
 
         @include('errors._check')
 
-        {!! Form::model($user,['route'=>['users.update','id'=>$user->id],'method'=>'put']) !!}
+        {!! Form::model($user,['route'=>['laccuser.users.update','id'=>$user->id],'method'=>'put']) !!}
 
         @include('laccuser::users._form')
 
         <div class="form-group text-center">
             {!! Form::submit('Edit', ['class'=>'btn btn-primary btn-sm']) !!}
-            <a href="{{ route('users.index') }}" class="btn btn-warning btn-sm"> Return </a>
+            <a href="{{ route('laccuser.users.index') }}" class="btn btn-warning btn-sm"> Return </a>
         </div>
 
         {!! Form::close() !!}

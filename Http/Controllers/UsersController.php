@@ -7,7 +7,6 @@ use Illuminate\Database\Connection;
 
 use LACC\Repositories\AddressRepository;
 use LACC\Criteria\FormAvancedSearch;
-use LACC\Http\Controllers\Controller;
 use LACC\Models\City;
 use LACC\Models\State;
 use LACC\Services\AddressService;
@@ -57,7 +56,7 @@ class UsersController extends Controller
      */
     protected $addressRepository;
 
-    protected $urlDefault = 'users.index';
+    protected $urlDefault = 'laccuser.users.index';
 
     public function __construct(
         State $state,
@@ -126,7 +125,7 @@ class UsersController extends Controller
 
             $request->session()->flash('message', ['type' => 'success','msg'=> "User '{$data['name']}' successfully registered!"]);
 
-            return redirect()->route( 'users.index' );
+            return redirect()->route( 'laccuser.users.index' );
         } catch (\Exception $e){
             $this->bd->rollBack();
             dd( $e->getMessage() );
@@ -160,7 +159,7 @@ class UsersController extends Controller
             $user['cep']          = $addressUser[0]['cep'];
             $user['type_address'] = $addressUser[0]['type_address'];
         }
-//        dd($user);
+
         $cities      = $this->cityService->getListCitiesInSelect();
         $civilStatus = $this->userService->getPrepareListCivilStatus();
         $typeAddress = $this->userService->getPrepareListTypeAddress();
@@ -214,7 +213,7 @@ class UsersController extends Controller
 
         $request->session()->flash('message', ['type' => 'success','msg'=> 'User deleted successfully!']);
 
-        return redirect()->route( 'users.index' );
+        return redirect()->route( 'laccuser.users.index' );
     }
 
     public function advancedSearch( Request $request )

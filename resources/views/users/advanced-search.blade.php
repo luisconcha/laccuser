@@ -60,7 +60,7 @@
             </div>
             <div class="form-group text-center">
                 {!! Form::submit('Search...', ['class'=>'btn btn-primary btn-sm']) !!}
-                <a href="{{ route('users.index') }}" class="btn btn-warning btn-sm"> Return </a>
+                <a href="{{ route('laccuser.users.index') }}" class="btn btn-warning btn-sm"> Return </a>
             </div>
             {!! Form::close() !!}
         </div>

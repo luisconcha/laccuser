@@ -38,9 +38,9 @@
             </div>
         </div>
         <div class="row">
-            <a href="{{ route('users.index') }}" class="btn btn-primary">Return list of users</a>
+            <a href="{{ route('laccuser.users.index') }}" class="btn btn-primary">Return list of users</a>
 
-            <a href="{{route('users.edit',['id'=>$user->id])}}" class="btn btn-warning">Edit the of user</a>
+            <a href="{{route('laccuser.users.edit',['id'=>$user->id])}}" class="btn btn-warning">Edit the of user</a>
         </div>
     </div>
 

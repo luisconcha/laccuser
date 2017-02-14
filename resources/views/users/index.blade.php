@@ -16,7 +16,7 @@
                 </span>
                 {!! Form::text('search', null, ['placeholder'=> ($search) ? $search : 'id, or name','class'=>'form-control']) !!}
                 <span class="input-group-btn">
-                    <a href="{{ route( 'users.create' )  }}" class="btn btn-primary">New user</a>
+                    <a href="{{ route( 'laccuser.users.create' )  }}" class="btn btn-primary">New user</a>
             </span>
             </div>
             {!! Form::close() !!}
@@ -37,15 +37,15 @@
                         <td>{{ $user->id }}</td>
                         <td>{{ $user->name }}</td>
                         <td>
-                            <a href="{{route('users.edit',['id'=>$user->id])}}"
+                            <a href="{{route('laccuser.users.edit',['id'=>$user->id])}}"
                                class="btn btn-warning btn-outline btn-xs">
                                 <strong>Edit</strong>
                             </a>
-                            <a href="{{route('users.destroy',['id'=>$user->id])}}"
+                            <a href="{{route('laccuser.users.destroy',['id'=>$user->id])}}"
                                class="btn btn-danger btn-outline btn-xs">
                                 <strong>Delete</strong>
                             </a>
-                            <a href="{{route('users.detail',['id'=>$user->id])}}"
+                            <a href="{{route('laccuser.users.detail',['id'=>$user->id])}}"
                                class="btn btn-warning btn-outline btn-xs">
                                 <strong>Detail</strong>
                             </a>

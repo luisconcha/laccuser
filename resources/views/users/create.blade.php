@@ -11,13 +11,13 @@
 
             @include('errors._check')
 
-            {!! Form::open(['route'=>'users.store']) !!}
+            {!! Form::open(['route'=>'laccuser.users.store']) !!}
 
             @include('laccuser::users._form')
 
             <div class="form-group text-center">
                 {!! Form::submit('Save', ['class'=>'btn btn-primary btn-sm']) !!}
-                <a href="{{ route('users.index') }}" class="btn btn-warning btn-sm"> Return </a>
+                <a href="{{ route('laccuser.users.index') }}" class="btn btn-warning btn-sm"> Return </a>
             </div>
 
             {!! Form::close() !!}
