@@ -4,7 +4,7 @@ namespace LaccUser\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserRequest extends FormRequest
+class UserPasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,12 +23,8 @@ class UserRequest extends FormRequest
      */
     public function rules()
     {
-        $idUser = ( $this->route('user') ) ? $this->route( 'user' ) : null;
-
         return [
-            'name'     => "required|max:150|unique:users,name,$idUser",
-            'email'    => "required|email|unique:users,email,$idUser",
-            'num_cpf'  => "required|unique:users,num_cpf,$idUser"
+            'password' => "required|min:6|max:16|confirmed"
         ];
     }
 }

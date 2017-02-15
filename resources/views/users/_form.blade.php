@@ -30,11 +30,6 @@
     {!! Form::file('avatar',null, ['class'=>'form-control']) !!}
 </div>
 
-<div class="form-group {{ $errors->first('password')? ' has-error':'' }}">
-    {!! Form::label('Password','Password', ['class' => 'control-label']) !!}
-    {!! Form::password('password', ['placeholder'=>'Enter your password','class'=>'form-control', 'id'=>'password']) !!}
-</div>
-
 <hr>
 <h3>Address</h3>
 <div class="form-group {{ $errors->first('city_id')? ' has-error':'' }}">

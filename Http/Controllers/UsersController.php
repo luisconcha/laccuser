@@ -112,10 +112,13 @@ class UsersController extends Controller
         try{
             $this->bd->beginTransaction();
             $data = $request->all();
-            //alterar a funcionalidade para que o password seja opcional!!!
-            $data[ 'password' ] = ( $data['password'] ) ? $data['password'] : $this->userService->setEncryptPassword( '123456' );
-
+            $data[ 'password' ] = $this->userService->setEncryptPassword('123456');
             $user = $this->userRepository->create( $data );
+
+            \UserVerification::generate($user);
+            $subject = config('laccuser.email.user_created.subject');//@seed /path/Modules/LaccUser/Config/config.php
+            \UserVerification::emailView('laccuser::emails.user-created');
+            \UserVerification::send($user, $subject);
 
             if( $user ){
                 $data['user_id'] = $user->id;
@@ -180,9 +183,6 @@ class UsersController extends Controller
             $this->bd->beginTransaction();
 
             $data = $request->all();
-
-            //alterar a funcionalidade para que o password seja opciona!!!
-            $data[ 'password' ] = ( $data['password'] ) ? $data['password'] : $this->userService->setEncryptPassword( '123456' );
 
             if( $this->userRepository->update( $data, $idUser ) ){
                 $this->addressRepository->update( $data, $user->address->id);
