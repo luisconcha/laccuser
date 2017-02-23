@@ -41,10 +41,17 @@
                                class="btn btn-warning btn-outline btn-xs">
                                 <strong>Edit</strong>
                             </a>
-                            <a href="{{route('laccuser.users.destroy',['id'=>$user->id])}}"
-                               class="btn btn-danger btn-outline btn-xs">
-                                <strong>Delete</strong>
-                            </a>
+                            @if ($user->id == \Auth::user()->id)
+                                <a href="#"
+                                   class="btn btn-default btn-outline btn-xs disabled">
+                                    <strong>Can not Delete user</strong>
+                                </a>
+                            @else
+                                <a href="{{route('laccuser.users.destroy',['id'=>$user->id])}}"
+                                   class="btn btn-danger btn-outline btn-xs">
+                                    <strong>Delete</strong>
+                                </a>
+                            @endif
                             <a href="{{route('laccuser.users.detail',['id'=>$user->id])}}"
                                class="btn btn-warning btn-outline btn-xs">
                                 <strong>Detail</strong>

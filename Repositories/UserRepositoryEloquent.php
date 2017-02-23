@@ -2,6 +2,8 @@
 
 namespace LaccUser\Repositories;
 
+use LACC\Criteria\CriteriaTrashedTrait;
+use LACC\Repositories\Traits\RepositoryRestoreTrait;
 use LaccUser\Models\User;
 use LACC\Repositories\Traits\BaseRepositoryTrait;
 use Prettus\Repository\Criteria\RequestCriteria;
@@ -13,7 +15,7 @@ use Prettus\Repository\Eloquent\BaseRepository;
  */
 class UserRepositoryEloquent extends BaseRepository implements UserRepository
 {
-    use BaseRepositoryTrait;
+    use BaseRepositoryTrait, CriteriaTrashedTrait, RepositoryRestoreTrait;
 
     protected $fieldSearchable = [
         'id',

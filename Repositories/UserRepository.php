@@ -1,7 +1,7 @@
 <?php
-
 namespace LaccUser\Repositories;
 
+use LACC\Criteria\CriteriaTrashedInterface;
 use Prettus\Repository\Contracts\RepositoryCriteriaInterface;
 use Prettus\Repository\Contracts\RepositoryInterface;
 
@@ -10,8 +10,9 @@ use Prettus\Repository\Contracts\RepositoryInterface;
  * @package namespace LACC\Repositories;
  */
 interface UserRepository extends
-    RepositoryInterface,
-    RepositoryCriteriaInterface
+	RepositoryInterface,
+	RepositoryCriteriaInterface,
+	CriteriaTrashedInterface
 {
-    //
+		//
 }
