@@ -1,5 +1,4 @@
 <?php
-
 namespace LaccUser\Providers;
 
 use Illuminate\Support\ServiceProvider;
@@ -21,12 +20,16 @@ class RepositoryServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind(
-            \LaccUser\Repositories\UserRepository::class,
-            \LaccUser\Repositories\UserRepositoryEloquent::class
+          \LaccUser\Repositories\UserRepository::class,
+          \LaccUser\Repositories\UserRepositoryEloquent::class
         );
         $this->app->bind(
-            \LaccUser\Repositories\RoleRepository::class,
-            \LaccUser\Repositories\RoleRepositoryEloquent::class
+          \LaccUser\Repositories\RoleRepository::class,
+          \LaccUser\Repositories\RoleRepositoryEloquent::class
+        );
+        $this->app->bind(
+          \LaccUser\Repositories\PermissionRepository::class,
+          \LaccUser\Repositories\PermissionRepositoryEloquent::class
         );
     }
 

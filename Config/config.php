@@ -17,6 +17,9 @@ return [
     'num_rg'   => env( 'USER_RG', 'RG-12555' ),
   ],
   'acl'          => [
-    'role_admin' => env( 'ROLE_ADMIN', 'Admin' ),
+    'role_admin'              => env( 'ROLE_ADMIN', 'Admin' ),
+    'controllers_annotations' => [
+      __DIR__ . '/../Http/Controllers',
+    ],
   ],
 ];
