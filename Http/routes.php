@@ -13,6 +13,12 @@ Route::group( [ 'as' => 'laccuser.', 'middleware' => [ 'auth', config( 'laccuser
 						Route::get( 'users/{id}', [ 'as' => 'users.restore', 'uses' => 'Trashs\UsersTrashController@update' ] );
 				});
 
+				//Roles
+				Route::group(['as' => 'role.'], function (){
+						Route::resource( 'roles', 'Roles\RolesController', 	[ 'except' => [ 'show','destroy' ] ]  );
+            Route::get( 'roles-delete/{id}', [ 'as' => 'roles.destroy', 'uses' => 'Roles\RolesController@destroy' ] );
+				});
+
 		} );
 		Route::get( 'user/password-edit', [ 'as' => 'user_password.edit', 'uses' => 'UsersPasswordController@edit' ] );
 		Route::put( 'user/password-update', [ 'as' => 'user_password.update', 'uses' => 'UsersPasswordController@update' ] );
