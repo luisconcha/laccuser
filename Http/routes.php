@@ -1,6 +1,6 @@
 <?php
 Route::group( [ 'as' => 'laccuser.', 'middleware' => [ 'auth', config( 'laccuser.middleware.isVerified' ) ] ], function () {
-		Route::group( [ 'prefix' => 'admin' ], function () {
+		Route::group( [ 'prefix' => 'admin', 'middleware' => 'can:user-admin' ], function () {
 				Route::resource( '/users', 'UsersController', [ 'except' => [ 'show' ] ] );
 				Route::get( 'users/{id}', [ 'as' => 'users.destroy', 'uses' => 'UsersController@destroy' ] );
 				Route::get( 'user-advanced-search', [ 'as' => 'advanced.users.search', 'uses' => 'UsersController@advancedSearch' ] );
