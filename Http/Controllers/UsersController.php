@@ -11,7 +11,9 @@ use LACC\Services\AddressService;
 use LACC\Services\CityService;
 use LaccUser\Http\Requests\UserDeleteRequest;
 use LaccUser\Http\Requests\UserRequest;
+use LaccUser\Models\Role;
 use LaccUser\Repositories\UserRepository;
+use LaccUser\Services\RoleService;
 use LaccUser\Services\UserService;
 use LaccUser\Annotations\Mapping\Action as ActionAnnotation;
 use LaccUser\Annotations\Mapping\Controller as ControllerAnnotation;
@@ -34,7 +36,7 @@ class UsersController extends Controller
 
     protected $bd;
 
-    private $with = [ 'address' ];
+    private $with = [ 'address', 'roles' ];
 
     /**
      * @var \LaccUser\Services\UserService
@@ -85,15 +87,37 @@ class UsersController extends Controller
     }
 
     /**
+     * @param Request $request
      * @ActionAnnotation(name="list", description="View user list")
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index( Request $request )
     {
         $search = $request->get( 'search' );
-        $users  = $this->userRepository->paginate( 10 );
+        $users  = $this->prepareListRoles( $this->userRepository->with( $this->with )->paginate( 10 ) );
 
         return view( 'laccuser::users.index', compact( 'users', 'search' ) );
+    }
+
+    /**
+     * Prepara campo de role para adicionar cor de fundo quando existe role na listagem de usuários
+     *
+     * @param $users
+     *
+     * @return mixed
+     */
+    private function prepareListRoles( $users )
+    {
+        foreach ( $users as $user ) {
+            if ( $user->roles ) {
+                foreach ( $user->roles as $role ) {
+                    $role->name = "<span class='label' style='background-color: $role->cor'>" . $role->name . "</span>";
+                }
+            }
+        }
+
+        return $users;
     }
 
     /**

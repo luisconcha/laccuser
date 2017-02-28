@@ -14,6 +14,7 @@ class CreateAclData extends Migration
     {
         $roleAdmin = Role::create( [
           'name'        => config( 'laccuser.acl.role_admin' ),
+          'cor'         => '#900',
           'description' => 'Papel do usuário administrador do sistema',
         ] );
         $user      = User::where( 'email', config( 'laccuser.user_default.email' ) )->first();

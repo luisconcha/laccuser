@@ -36,7 +36,8 @@
                 @foreach($roles as $role)
                     <tr>
                         <td>{{ $role->id }}</td>
-                        <td>{{ $role->name }}</td>
+                        <td><span class="label" style="background-color: {!! $role->cor !!}">{{ $role->name
+                        }}</span></td>
                         <td>{{ $role->description }}</td>
                         <td>
                             <a href="{{route('laccuser.role.roles.edit',['id'=>$role->id])}}"

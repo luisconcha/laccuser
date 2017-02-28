@@ -1,6 +1,7 @@
 <?php
 namespace LaccUser\Http\Controllers\Roles;
 
+use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Database\Connection;
 use Illuminate\Http\Request;
 use LaccUser\Http\Controllers\Controller;
@@ -45,7 +46,7 @@ class RolesController extends Controller
     {
         $search = $request->get( 'search' );
         $roles  = $this->roleRepository->paginate( 10 );
-
+        
         return view( 'laccuser::roles.index', compact( 'roles', 'search' ) );
     }
 
@@ -99,22 +100,23 @@ class RolesController extends Controller
      */
     public function update( RoleRequest $request, $idRole )
     {
+        $data  = $request->all();
+        $urlTo = $this->roleService->checksTheCurrentUrl( $data[ 'redirect_to' ], $this->urlDefault );
         try {
             $this->roleService->verifyTheExistenceOfObject( $this->roleRepository, $idRole, $this->with );
             $this->bd->beginTransaction();
-            $data = $request->all();
             $this->roleRepository->update( $data, $idRole );
             $this->bd->commit();
-            $urlTo = $this->roleService->checksTheCurrentUrl( $data[ 'redirect_to' ], $this->urlDefault );
             $request->session()->flash( 'message',
               [ 'type' => 'success', 'msg' => "Role '{$data['name']}' successfully updated!" ] );
 
-            return redirect()->to( $urlTo );
-
-        } catch ( \Exception $e ) {
+        } catch ( QueryException $e ) {
             $this->bd->rollBack();
-            dd( $e->getMessage() );
+            $request->session()->flash( 'error',
+              [ 'type' => 'error', 'msg' => "Could not change role($idRole)." ] );
         }
+
+        return redirect()->to( $urlTo );
     }
 
     /**
@@ -125,10 +127,15 @@ class RolesController extends Controller
      */
     public function destroy( $id, Request $request )
     {
-        $this->roleService->verifyTheExistenceOfObject( $this->roleRepository, $id, $this->with );
-        $this->roleRepository->delete( $id );
-        $request->session()->flash( 'message', [ 'type' => 'success', 'msg' => 'Role deleted successfully!' ] );
+        try {
+            $this->roleService->verifyTheExistenceOfObject( $this->roleRepository, $id, $this->with );
+            $this->roleRepository->delete( $id );
+            $request->session()->flash( 'message', [ 'type' => 'success', 'msg' => 'Role deleted successfully!' ] );
+        } catch ( QueryException $ex ) {
+            $request->session()->flash( 'error',
+              [ 'type' => 'error', 'msg' => 'The user role can not be deleted. It is related to other records.' ] );
+        }
 
-        return redirect()->route( 'laccuser.role.roles.index' );
+        return redirect()->route( $this->urlDefault );
     }
 }

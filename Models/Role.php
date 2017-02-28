@@ -2,7 +2,6 @@
 namespace LaccUser\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 
 class Role extends Model
@@ -13,6 +12,7 @@ class Role extends Model
 
     protected $fillable = [
       'name',
+      'cor',
       'description',
     ];
 

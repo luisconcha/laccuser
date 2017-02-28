@@ -28,14 +28,16 @@
                 <tr>
                     <th>ID</th>
                     <th>Name</th>
+                    <th>Role</th>
                     <td>Actions</td>
                 </tr>
                 </thead>
                 <tbody>
-                @foreach($users as $user)
+                @forelse($users as $user)
                     <tr>
                         <td>{{ $user->id }}</td>
                         <td>{{ $user->name }}</td>
+                        <td>{!! $user->roles->implode('name',' | ') !!}</td>
                         <td>
                             <a href="{{route('laccuser.users.edit',['id'=>$user->id])}}"
                                class="btn btn-warning btn-outline btn-xs">
@@ -58,12 +60,14 @@
                             </a>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr class="text-center">
+                        <td colspan="4"><span class="label label-warning">There are no registered users</span></td>
+                    </tr>
+                @endforelse
                 </tbody>
             </table>
-
             <div class="text-center">{{ $users->links() }}</div>
-
         </div>
     </div>
 @endsection
