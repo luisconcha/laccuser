@@ -12,6 +12,7 @@ use LACC\Services\CityService;
 use LaccUser\Http\Requests\UserDeleteRequest;
 use LaccUser\Http\Requests\UserRequest;
 use LaccUser\Models\Role;
+use LaccUser\Repositories\RoleRepository;
 use LaccUser\Repositories\UserRepository;
 use LaccUser\Services\RoleService;
 use LaccUser\Services\UserService;
@@ -63,6 +64,11 @@ class UsersController extends Controller
      */
     protected $addressRepository;
 
+    /**
+     * @var RoleRepository
+     */
+    protected $roleRepository;
+
     protected $urlDefault = 'laccuser.users.index';
 
     public function __construct(
@@ -73,7 +79,8 @@ class UsersController extends Controller
       UserRepository $userRepository,
       CityService $cityService,
       AddressRepository $addressRepository,
-      AddressService $addressService
+      AddressService $addressService,
+      RoleRepository $roleRepository
     ) {
         $this->state             = $state;
         $this->city              = $city;
@@ -83,7 +90,7 @@ class UsersController extends Controller
         $this->cityService       = $cityService;
         $this->addressRepository = $addressRepository;
         $this->addressService    = $addressService;
-
+        $this->roleRepository    = $roleRepository;
     }
 
     /**
@@ -129,8 +136,9 @@ class UsersController extends Controller
         $cities      = $this->cityService->getListCitiesInSelect();
         $civilStatus = $this->userService->getPrepareListCivilStatus();
         $typeAddress = $this->userService->getPrepareListTypeAddress();
+        $roles       = $this->roleRepository->lists( 'name', 'id' );
 
-        return view( 'laccuser::users.create', compact( 'cities', 'civilStatus', 'typeAddress' ) );
+        return view( 'laccuser::users.create', compact( 'cities', 'civilStatus', 'typeAddress', 'roles' ) );
     }
 
     /**
@@ -151,9 +159,17 @@ class UsersController extends Controller
             $subject = config( 'laccuser.email.user_created.subject' );//@seed /path/Modules/LaccUser/Config/config.php
             \UserVerification::emailView( 'laccuser::emails.user-created' );
             \UserVerification::send( $user, $subject );
+            //
             if ( $user ) {
                 $data[ 'user_id' ] = $user->id;
                 $this->addressRepository->create( $data );
+                /**
+                 * Verifica se existe a role atrelada ao usuario para salvar na tbl pivot role_user
+                 */
+                if ( !empty( $data[ 'roles' ][ 0 ] ) ) {
+                    $user->roles()->sync( $data[ 'roles' ] );
+                }
+
             }
             $this->bd->commit();
             $request->session()->flash( 'message',
@@ -201,8 +217,13 @@ class UsersController extends Controller
         $cities      = $this->cityService->getListCitiesInSelect();
         $civilStatus = $this->userService->getPrepareListCivilStatus();
         $typeAddress = $this->userService->getPrepareListTypeAddress();
+        $roles = $this->roleRepository->lists( 'name', 'id' );
+//        $roles = $this->roleRepository->listsWithMutators( 'name', 'id' );
+//        $roles = $user->formRoleAttributte();
+//        $roles = $this->roleRepository->all()->pluck( 'name', 'id' );
 
-        return view( 'laccuser::users.edit', compact( 'user', 'states', 'cities', 'civilStatus', 'typeAddress' ) );
+        return view( 'laccuser::users.edit', compact( 'user', 'states', 'cities', 'civilStatus', 'typeAddress', 'roles'
+        ) );
     }
 
     /**
@@ -218,8 +239,15 @@ class UsersController extends Controller
             $user = $this->userService->verifyTheExistenceOfObject( $this->userRepository, $idUser, $this->with );
             $this->bd->beginTransaction();
             $data = $request->all();
+            
             if ( $this->userRepository->update( $data, $idUser ) ) {
                 $this->addressRepository->update( $data, $user->address->id );
+                /**
+                 * Verifica se existe a role atrelada ao usuario para salvar na tbl pivot role_user
+                 */
+                if ( isset($data['roles'])  && empty( !$data[ 'roles' ][0] ) ) {
+                    $user->roles()->sync( $data[ 'roles' ] );
+                }
             }
             $this->bd->commit();
             $urlTo = $this->userService->checksTheCurrentUrl( $data[ 'redirect_to' ], $this->urlDefault );

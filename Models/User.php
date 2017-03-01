@@ -1,6 +1,7 @@
 <?php
 namespace LaccUser\Models;
 
+use Collective\Html\Eloquent\FormAccessible;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -9,7 +10,7 @@ use LaccBook\Models\Book;
 
 class User extends Authenticatable
 {
-    use Notifiable, SoftDeletes;
+    use FormAccessible,Notifiable, SoftDeletes;
 
     protected $dates = [ 'deleted_at' ];
 
@@ -84,4 +85,5 @@ class User extends Authenticatable
     {
         return $this->hasRole( config( 'laccuser.acl.role_admin' ) );
     }
+
 }

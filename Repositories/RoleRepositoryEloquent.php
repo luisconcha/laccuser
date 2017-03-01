@@ -1,12 +1,13 @@
 <?php
 namespace LaccUser\Repositories;
 
+use Illuminate\Database\Eloquent\Collection;
+use Prettus\Repository\Criteria\RequestCriteria;
+use Prettus\Repository\Eloquent\BaseRepository;
 use LACC\Criteria\CriteriaTrashedTrait;
 use LACC\Repositories\Traits\BaseRepositoryTrait;
 use LACC\Repositories\Traits\RepositoryRestoreTrait;
 use LaccUser\Models\Role;
-use Prettus\Repository\Criteria\RequestCriteria;
-use Prettus\Repository\Eloquent\BaseRepository;
 
 /**
  * Class RoleRepositoryEloquent
@@ -30,6 +31,19 @@ class RoleRepositoryEloquent extends BaseRepository implements RoleRepository
     public function model()
     {
         return Role::class;
+    }
+
+    /**
+     * @param      $column
+     * @param null $key
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function listsWithMutators( $column, $key = null )
+    {
+        /** @var  Collection $collection */
+        $collection = $this->all();
+        return $collection->pluck( $column, $key );
     }
 
     /**

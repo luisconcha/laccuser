@@ -1,5 +1,4 @@
 <?php
-
 namespace LaccUser\Repositories;
 
 use LACC\Criteria\CriteriaTrashedTrait;
@@ -18,10 +17,11 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
     use BaseRepositoryTrait, CriteriaTrashedTrait, RepositoryRestoreTrait;
 
     protected $fieldSearchable = [
-        'id',
-        'name'  => 'like',
-//        'address.district' => 'like',
+      'id',
+      'name' => 'like',
+      //'address.district' => 'like',
     ];
+
     /**
      * Specify Model class name
      *
@@ -32,13 +32,11 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         return User::class;
     }
 
-    
-
     /**
      * Boot up the repository, pushing criteria
      */
     public function boot()
     {
-        $this->pushCriteria(app(RequestCriteria::class));
+        $this->pushCriteria( app( RequestCriteria::class ) );
     }
 }

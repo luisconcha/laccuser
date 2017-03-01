@@ -14,5 +14,5 @@ interface RoleRepository extends
 	RepositoryCriteriaInterface,
 	CriteriaTrashedInterface
 {
-		//
+    public function listsWithMutators($column, $key = null);
 }

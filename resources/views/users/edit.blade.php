@@ -9,7 +9,7 @@
         <h1>Edit User: <strong>{{$user->name}}</strong></h1>
 
         @include('errors._check')
-
+        
         {!! Form::model($user,['route'=>['laccuser.users.update','id'=>$user->id],'method'=>'put']) !!}
 
         @include('laccuser::users._form')
