@@ -24,10 +24,7 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-        //
-        \Gate::define( 'update-book', function ( $user, $book ) {
-            return $user->id == $book->author_id;
-        } );
+       
         /**
          * Executa antes de chamar outras hailidades
          * //if retorna true - autorizado
