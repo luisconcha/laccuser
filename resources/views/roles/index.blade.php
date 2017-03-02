@@ -30,9 +30,11 @@
                     <th>ID</th>
                     <th>Name</th>
                     <td>Description</td>
+                    <td>Actions</td>
                 </tr>
                 </thead>
                 <tbody>
+
                 @foreach($roles as $role)
                     <tr>
                         <td>{{ $role->id }}</td>
@@ -44,7 +46,7 @@
                                class="btn btn-warning btn-outline btn-xs">
                                 <strong>Edit</strong>
                             </a>
-                            @if( $role->name == 'Admin' )
+                            @if( $role->name == config( 'laccuser.acl.role_admin' ) )
                                 <a href="#"
                                    class="btn btn-default btn-outline btn-xs disabled">
                                     <strong>You can not delete the default system role</strong>
@@ -55,6 +57,11 @@
                                     <strong>Delete</strong>
                                 </a>
                             @endif
+                        </td>
+                        <td><a href="{{route('laccuser.role.roles.permissions.edit',['id'=>$role->id])}}"
+                               class="btn btn-primary btn-outline btn-xs">
+                                <strong>Edit Permissions</strong>
+                            </a>
                         </td>
                     </tr>
                 @endforeach

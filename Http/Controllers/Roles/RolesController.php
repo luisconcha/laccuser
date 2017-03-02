@@ -4,11 +4,21 @@ namespace LaccUser\Http\Controllers\Roles;
 use Illuminate\Database\QueryException;
 use Illuminate\Database\Connection;
 use Illuminate\Http\Request;
+use LaccUser\Criteria\FindPermissionsGroupCriteria;
+use LaccUser\Criteria\FindPermissionsResourceCriteria;
 use LaccUser\Http\Controllers\Controller;
+use LaccUser\Http\Requests\PermissionRequest;
 use LaccUser\Http\Requests\RoleRequest;
+use LaccUser\Repositories\PermissionRepository;
 use LaccUser\Repositories\RoleRepository;
 use LaccUser\Services\RoleService;
+use LaccUser\Annotations\Mapping as Permission;
 
+/**
+ * Class RolesController
+ * @package LaccUser\Http\Controllers\Roles
+ * @Permission\Controller(name="roles-admin", description="Manage user roles")
+ */
 class RolesController extends Controller
 {
     protected $bd;
@@ -25,20 +35,28 @@ class RolesController extends Controller
      */
     protected $roleRepository;
 
+    /**
+     * @var PermissionRepository
+     */
+    protected $permissionRepository;
+
     protected $urlDefault = 'laccuser.role.roles.index';
 
     public function __construct(
       Connection $connection,
       RoleService $roleService,
-      RoleRepository $roleRepository
+      RoleRepository $roleRepository,
+      PermissionRepository $permissionRepository
     ) {
-        $this->bd             = $connection;
-        $this->roleService    = $roleService;
-        $this->roleRepository = $roleRepository;
+        $this->bd                   = $connection;
+        $this->roleService          = $roleService;
+        $this->roleRepository       = $roleRepository;
+        $this->permissionRepository = $permissionRepository;
     }
 
     /**
      * @param Request $request
+     * @Permission\Action(name="list-roles", description="View list of user roles")
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
@@ -51,6 +69,8 @@ class RolesController extends Controller
     }
 
     /**
+     * @Permission\Action(name="store-roles", description="Register user roles")
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function create()
@@ -60,6 +80,7 @@ class RolesController extends Controller
 
     /**
      * @param RoleRequest $request
+     * @Permission\Action(name="store-roles", description="Register user roles")
      *
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -82,6 +103,7 @@ class RolesController extends Controller
 
     /**
      * @param $id
+     * @Permission\Action(name="update-roles", description="Update user roles")
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
@@ -95,12 +117,14 @@ class RolesController extends Controller
     /**
      * @param RoleRequest $request
      * @param             $idRole
+     * @Permission\Action(name="update-roles", description="Update user roles")
      *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update( RoleRequest $request, $idRole )
     {
-        $data  = $request->all();
+        //$data  = $request->all();
+        $data  = $request->except( 'permissions' );
         $urlTo = $this->roleService->checksTheCurrentUrl( $data[ 'redirect_to' ], $this->urlDefault );
         try {
             $this->roleService->verifyTheExistenceOfObject( $this->roleRepository, $idRole, $this->with );
@@ -122,6 +146,7 @@ class RolesController extends Controller
     /**
      * @param         $id
      * @param Request $request
+     * @Permission\Action(name="destroy-roles", description="Delete user roles")
      *
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -140,5 +165,43 @@ class RolesController extends Controller
         }
 
         return redirect()->route( $this->urlDefault );
+    }
+
+    /**
+     * @param $id
+     * @Permission\Action(name="edit-role-permissions", description="Edit role permissions")
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function editPermissions( $id )
+    {
+        $role = $this->roleRepository->find( $id );
+        //
+        $this->permissionRepository->pushCriteria( new FindPermissionsResourceCriteria() );
+        $permissions = $this->permissionRepository->all();
+        //
+        $this->permissionRepository->resetCriteria();
+        $this->permissionRepository->pushCriteria( new FindPermissionsGroupCriteria() );
+        $permissionsGroup = $this->permissionRepository->all( [ 'name', 'description' ] );
+
+        return view( 'laccuser::roles.permissions', compact( 'role', 'permissions', 'permissionsGroup' ) );
+    }
+
+    /**
+     * @param PermissionRequest $request
+     * @param                   $id
+     * @Permission\Action(name="edit-role-permissions", description="Edit role permissions")
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function updatePermissions( PermissionRequest $request, $id )
+    {
+        $data = $request->only( 'permissions' );
+        $this->roleRepository->update( $data, $id );
+        $urlTo = $this->roleService->checksTheCurrentUrl( $request->get( 'redirect_to' ), $this->urlDefault );
+        $request->session()->flash( 'message',
+          [ 'type' => 'success', 'msg' => "Successfully assigned permissions!" ] );
+
+        return redirect()->to( $urlTo );
     }
 }

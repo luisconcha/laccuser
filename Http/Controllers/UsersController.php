@@ -11,18 +11,15 @@ use LACC\Services\AddressService;
 use LACC\Services\CityService;
 use LaccUser\Http\Requests\UserDeleteRequest;
 use LaccUser\Http\Requests\UserRequest;
-use LaccUser\Models\Role;
 use LaccUser\Repositories\RoleRepository;
 use LaccUser\Repositories\UserRepository;
-use LaccUser\Services\RoleService;
 use LaccUser\Services\UserService;
-use LaccUser\Annotations\Mapping\Action as ActionAnnotation;
-use LaccUser\Annotations\Mapping\Controller as ControllerAnnotation;
+use LaccUser\Annotations\Mapping as Permission;
 
 /**
  * Class UsersController
  * @package LaccUser\Http\Controllers
- * @ControllerAnnotation(name="users-admin", description="User administration")
+ * @Permission\Controller(name="users-admin", description="User administration")
  */
 class UsersController extends Controller
 {
@@ -95,7 +92,7 @@ class UsersController extends Controller
 
     /**
      * @param Request $request
-     * @ActionAnnotation(name="list", description="View user list")
+     * @Permission\Action(name="list", description="View user list")
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
@@ -128,7 +125,7 @@ class UsersController extends Controller
     }
 
     /**
-     * @ActionAnnotation(name="view-form-create-user", description="View user creation form")
+     * @Permission\Action(name="store-users", description="Store users")
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function create()
@@ -143,7 +140,7 @@ class UsersController extends Controller
 
     /**
      * @param UserRequest $request
-     * @ActionAnnotation(name="store-user", description="Create new user")
+     * @Permission\Action(name="store-users", description="Store users")
      *
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -184,7 +181,7 @@ class UsersController extends Controller
 
     /**
      * @param $id
-     * @ActionAnnotation(name="detail-user", description="View user detail")
+     * @Permission\Action(name="view-user-detail", description="View user detail")
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
@@ -199,7 +196,7 @@ class UsersController extends Controller
 
     /**
      * @param $id
-     * @ActionAnnotation(name="view-form-edit-user", description="View user edit form")
+     * @Permission\Action(name="update-users", description="Update users")
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
@@ -217,11 +214,10 @@ class UsersController extends Controller
         $cities      = $this->cityService->getListCitiesInSelect();
         $civilStatus = $this->userService->getPrepareListCivilStatus();
         $typeAddress = $this->userService->getPrepareListTypeAddress();
-        $roles = $this->roleRepository->lists( 'name', 'id' );
-//        $roles = $this->roleRepository->listsWithMutators( 'name', 'id' );
-//        $roles = $user->formRoleAttributte();
-//        $roles = $this->roleRepository->all()->pluck( 'name', 'id' );
-
+        $roles       = $this->roleRepository->lists( 'name', 'id' );
+        //        $roles = $this->roleRepository->listsWithMutators( 'name', 'id' );
+        //        $roles = $user->formRoleAttributte();
+        //        $roles = $this->roleRepository->all()->pluck( 'name', 'id' );
         return view( 'laccuser::users.edit', compact( 'user', 'states', 'cities', 'civilStatus', 'typeAddress', 'roles'
         ) );
     }
@@ -229,7 +225,7 @@ class UsersController extends Controller
     /**
      * @param \LaccUser\Http\Requests\UserRequest $request
      * @param                                     $idUser
-     * @ActionAnnotation(name="update-user", description="Updates user data")
+     * @Permission\Action(name="update-users", description="Update users")
      *
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -239,13 +235,12 @@ class UsersController extends Controller
             $user = $this->userService->verifyTheExistenceOfObject( $this->userRepository, $idUser, $this->with );
             $this->bd->beginTransaction();
             $data = $request->all();
-            
             if ( $this->userRepository->update( $data, $idUser ) ) {
                 $this->addressRepository->update( $data, $user->address->id );
                 /**
                  * Verifica se existe a role atrelada ao usuario para salvar na tbl pivot role_user
                  */
-                if ( isset($data['roles'])  && empty( !$data[ 'roles' ][0] ) ) {
+                if ( isset( $data[ 'roles' ] ) && empty( !$data[ 'roles' ][ 0 ] ) ) {
                     $user->roles()->sync( $data[ 'roles' ] );
                 }
             }
@@ -266,7 +261,7 @@ class UsersController extends Controller
      * @param                   $id
      * @param Request           $request
      * @param UserDeleteRequest $userDeleteRequest
-     * @ActionAnnotation(name="destroy-user", description="Destroy user data")
+     * @Permission\Action(name="destroy-user", description="Destroy user data")
      *
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -281,7 +276,7 @@ class UsersController extends Controller
 
     /**
      * @param Request $request
-     * @ActionAnnotation(name="advanced-search-user", description="Advanced user search")
+     * @Permission\Action(name="advanced-search-user", description="Advanced user search")
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */

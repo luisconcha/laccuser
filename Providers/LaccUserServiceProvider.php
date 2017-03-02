@@ -4,6 +4,7 @@ namespace LaccUser\Providers;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\CachedReader;
+use Jrean\UserVerification\UserVerificationServiceProvider;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Cache\FilesystemCache;
 use Illuminate\Support\ServiceProvider;
@@ -31,7 +32,6 @@ class LaccUserServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->publishMigrationsAndSeeders();
-
         /** @var PermissionReader $reader */
         //$reader = app( PermissionReader::class );
         //dd($reader->getPermissions());
@@ -44,9 +44,10 @@ class LaccUserServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->register( \Jrean\UserVerification\UserVerificationServiceProvider::class );
+        $this->app->register( UserVerificationServiceProvider::class );
         $this->app->register( RepositoryServiceProvider::class );
         $this->app->register( RouteServiceProvider::class );
+        $this->app->register( AuthServiceProvider::class );
         $this->registerAnnotations();
         $this->app->bind( Reader::class, function () {
             return new CachedReader(

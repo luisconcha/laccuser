@@ -31,6 +31,10 @@ class CreateAclData extends Migration
         $roleAdmin = Role::where( 'name', config( 'laccuser.acl.role_admin' ) )->first();
         $user      = User::where( 'email', config( 'laccuser.user_default.email' ) )->first();
         $user->roles()->detach( $roleAdmin->id );
-        $roleAdmin->forceDelete();
+
+        //desabilita os relacionamento entre role admin e todas as permissões
+        $roleAdmin->permissions()->detach();
+        $roleAdmin->users()->detach();
+        $roleAdmin->delete();
     }
 }

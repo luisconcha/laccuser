@@ -11,13 +11,14 @@
  */
 namespace LaccUser\Repositories;
 
+use Prettus\Repository\Contracts\RepositoryCriteriaInterface;
 use Prettus\Repository\Contracts\RepositoryInterface;
 
 /**
  * Interface PermissionRepository
  * @package LaccUser\Repositories
  */
-interface PermissionRepository extends RepositoryInterface
+interface PermissionRepository extends RepositoryInterface, RepositoryCriteriaInterface
 {
 
 }

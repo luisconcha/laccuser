@@ -4,13 +4,10 @@ namespace LaccUser\Http\Controllers;
 use LaccUser\Http\Requests\UserPasswordRequest;
 use LaccUser\Repositories\UserRepository;
 use LaccUser\Services\UserService;
-use LaccUser\Annotations\Mapping\Action as ActionAnnotation;
-use LaccUser\Annotations\Mapping\Controller as ControllerAnnotation;
 
 /**
  * Class UsersPasswordController
  * @package LaccUser\Http\Controllers
- * @ControllerAnnotation(name="users-password-admin", description="User administration")
  */
 class UsersPasswordController extends Controller
 {
@@ -39,7 +36,6 @@ class UsersPasswordController extends Controller
 
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     * @ActionAnnotation(name="view-form-user-settings-password", description="View password change form")
      */
     public function edit()
     {
@@ -50,7 +46,6 @@ class UsersPasswordController extends Controller
 
     /**
      * @param UserPasswordRequest $userPasswordRequest
-     * @ActionAnnotation(name="update-settings-password", description="Change password")
      *
      * @return \Illuminate\Http\RedirectResponse
      */

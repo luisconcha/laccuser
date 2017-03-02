@@ -34,6 +34,22 @@ class RoleRepositoryEloquent extends BaseRepository implements RoleRepository
     }
 
     /**
+     * @param array $attributes
+     * @param       $id
+     *
+     * @return mixed
+     */
+    public function update( array $attributes, $id )
+    {
+        $model = parent::update( $attributes, $id );
+        if ( isset( $attributes[ 'permissions' ] ) ) {
+            $model->permissions()->sync( $attributes[ 'permissions' ] );
+        }
+
+        return $model;
+    }
+
+    /**
      * @param      $column
      * @param null $key
      *
@@ -43,6 +59,7 @@ class RoleRepositoryEloquent extends BaseRepository implements RoleRepository
     {
         /** @var  Collection $collection */
         $collection = $this->all();
+
         return $collection->pluck( $column, $key );
     }
 

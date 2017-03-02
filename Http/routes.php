@@ -1,7 +1,8 @@
 <?php
-Route::group( [ 'as' => 'laccuser.', 'middleware' => [ 'auth', config( 'laccuser.middleware.isVerified' ) ] ], function () {
+Route::group( [ 'as' => 'laccuser.', 'middleware' => [ 'auth', config( 'laccuser.middleware.isVerified' ) ] ],
+  function () {
 
-    Route::group( [ 'prefix' => 'admin', 'middleware' => 'can:user-admin' ], function () {
+    Route::group( [ 'prefix' => 'admin', 'middleware' => 'auth.resource' ], function () {
 				Route::resource( '/users', 'UsersController', [ 'except' => [ 'show' ] ] );
 				Route::get( 'users/{id}', [ 'as' => 'users.destroy', 'uses' => 'UsersController@destroy' ] );
 				Route::get( 'user-advanced-search', [ 'as' => 'advanced.users.search', 'uses' => 'UsersController@advancedSearch' ] );
@@ -18,6 +19,12 @@ Route::group( [ 'as' => 'laccuser.', 'middleware' => [ 'auth', config( 'laccuser
 				Route::group(['as' => 'role.'], function (){
 						Route::resource( 'roles', 'Roles\RolesController', 	[ 'except' => [ 'show','destroy' ] ]  );
             Route::get( 'roles-delete/{id}', [ 'as' => 'roles.destroy', 'uses' => 'Roles\RolesController@destroy' ] );
+
+            //Permissions to user
+            Route::get( 'roles/{id}/permissions', [ 'as' => 'roles.permissions.edit', 'uses' => 'Roles\RolesController@editPermissions'
+            ] );
+            Route::put( 'roles/{id}/permissions', [ 'as' => 'roles.permissions.update', 'uses' => 'Roles\RolesController@updatePermissions'
+            ] );
 				});
 
 		} );
