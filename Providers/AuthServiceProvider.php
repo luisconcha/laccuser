@@ -24,7 +24,6 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-       
         /**
          * Executa antes de chamar outras hailidades
          * //if retorna true - autorizado
@@ -36,16 +35,19 @@ class AuthServiceProvider extends ServiceProvider
                 return true;
             }
         } );
-        /**
-         * @var PermissionRepository $permissionRepository
-         */
-        $permissionRepository = app( PermissionRepository::class );
-        $permissionRepository->pushCriteria( new FindPermissionsResourceCriteria() );
-        $permissions = $permissionRepository->all();
-        foreach ( $permissions as $p ):
-            \Gate::define( "{$p->name}/{$p->resource_name}", function ( $user ) use ( $p ) {
-                return $user->hasRole( $p->roles );
-            } );
-        endforeach;
+
+        
+        if ( !app()->runningInConsole() || app()->runningUnitTests() ) {
+            /** @var PermissionRepository $permissionRepository */
+            $permissionRepository = app( PermissionRepository::class );
+            $permissionRepository->pushCriteria( new FindPermissionsResourceCriteria() );
+            $permissions = $permissionRepository->all();
+            foreach ( $permissions as $p ):
+                \Gate::define( "{$p->name}/{$p->resource_name}", function ( $user ) use ( $p ) {
+                    return $user->hasRole( $p->roles );
+                } );
+            endforeach;
+        }
+
     }
 }

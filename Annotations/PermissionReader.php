@@ -33,8 +33,9 @@ class PermissionReader
     public function getPermissions()
     {
         $controllerClasses = $this->getControllers();
-        $declared          = get_declared_classes();
-        $permissions       = [];
+        //dd($controllerClasses);
+        $declared    = get_declared_classes();
+        $permissions = [];
         foreach ( $declared as $className ):
             $rc = new \ReflectionClass( $className );
             if ( in_array( $rc->getFileName(), $controllerClasses ) ) {
@@ -86,16 +87,20 @@ class PermissionReader
      */
     private function getControllers()
     {
-        $dirs  = [
+        $dirs   = [
           config( 'laccuser.acl.controllers_annotations' ),
           config( 'laccbook.acl.controllers_annotations' ),
         ];
-        $files = [];
+        $config = include __DIR__ . '/../Config/config.local.php';
+        $dirs   = array_merge( $dirs, $config[ 'acl' ][ 'controllers_annotations' ] );
+        $files  = [];
         foreach ( $dirs as $dir ):
-            foreach ( \File::allFiles( $dir ) as $file ):
-                $files[] = $file->getRealPath();
-                require_once $file->getRealPath();
-            endforeach;
+            if ( count( $dir ) > 0 ) {
+                foreach ( \File::allFiles( $dir ) as $file ):
+                    $files[] = $file->getRealPath();
+                    require_once $file->getRealPath();
+                endforeach;
+            }
         endforeach;
 
         return $files;
