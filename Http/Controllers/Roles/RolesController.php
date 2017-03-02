@@ -1,7 +1,7 @@
 <?php
 namespace LaccUser\Http\Controllers\Roles;
 
-use Doctrine\DBAL\Query\QueryException;
+use Illuminate\Database\QueryException;
 use Illuminate\Database\Connection;
 use Illuminate\Http\Request;
 use LaccUser\Http\Controllers\Controller;
@@ -46,7 +46,7 @@ class RolesController extends Controller
     {
         $search = $request->get( 'search' );
         $roles  = $this->roleRepository->paginate( 10 );
-        
+
         return view( 'laccuser::roles.index', compact( 'roles', 'search' ) );
     }
 
@@ -133,7 +133,10 @@ class RolesController extends Controller
             $request->session()->flash( 'message', [ 'type' => 'success', 'msg' => 'Role deleted successfully!' ] );
         } catch ( QueryException $ex ) {
             $request->session()->flash( 'error',
-              [ 'type' => 'error', 'msg' => 'The user role can not be deleted. It is related to other records.' ] );
+              [
+                'type' => 'danger',
+                'msg'  => 'The user role can not be deleted. It is related to other records.',
+              ] );
         }
 
         return redirect()->route( $this->urlDefault );

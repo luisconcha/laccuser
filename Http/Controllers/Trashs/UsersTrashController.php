@@ -36,7 +36,7 @@ class UsersTrashController extends Controller
 				$search = $request->get( 'search' );
 				$this->userRepository->onlyTrashed();
 				$users = $this->userRepository->paginate( 15 );
-				
+
 				return view( 'laccuser::trashs.index', compact( 'users', 'search' ) );
 		}
 
@@ -49,7 +49,7 @@ class UsersTrashController extends Controller
 		public function update( Request $request, $id )
 		{
 				$data = $request->all();
-				
+
 				$this->userRepository->onlyTrashed();
 				$this->userRepository->restore( $id );
 				$urlTo = $this->userService->checksTheCurrentUrl( $data[ 'redirect_to' ], $this->urlDefault );

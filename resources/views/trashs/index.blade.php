@@ -46,10 +46,10 @@ Return to the active users</a>
                         <td>
                             <a href="{{route('laccuser.trashed.users.restore',['id'=>$user->id])}}"
                                class="btn btn-danger btn-outline btn-xs"
-                               onclick="event.preventDefault();document.getElementById('restore-user').submit();">
+                               onclick="event.preventDefault();document.getElementById('restore-user-{{ $user->id }}').submit();">
                                 <strong>Restore</strong>
                             </a>
-                            {!! Form::open(['route' => ['laccuser.trashed.users.restore', 'id' =>$user->id] ,'method'=>'GET', 'id' => 'restore-user', 'style' => 'display:none']) !!}
+                            {!! Form::open(['route' => ['laccuser.trashed.users.restore', 'id' =>$user->id],'method'=>'GET', 'id' => "restore-user-$user->id", 'style' => 'display:none']) !!}
                             {!! Form::hidden('redirect_to', URL::previous()) !!}
                             {!! Form::hidden('_token', csrf_token()) !!}
                             {!! Form::close() !!}
