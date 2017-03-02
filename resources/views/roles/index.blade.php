@@ -34,7 +34,6 @@
                 </tr>
                 </thead>
                 <tbody>
-
                 @foreach($roles as $role)
                     <tr>
                         <td>{{ $role->id }}</td>
@@ -46,7 +45,7 @@
                                class="btn btn-warning btn-outline btn-xs">
                                 <strong>Edit</strong>
                             </a>
-                            @if( $role->name == config( 'laccuser.acl.role_admin' ) )
+                            @if( $role->name == config( 'laccuser.acl.role_admin' ) || $role->name == config( 'laccbook.acl.role_author' ) )
                                 <a href="#"
                                    class="btn btn-default btn-outline btn-xs disabled">
                                     <strong>You can not delete the default system role</strong>

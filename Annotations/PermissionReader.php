@@ -86,7 +86,10 @@ class PermissionReader
      */
     private function getControllers()
     {
-        $dirs  = config( 'laccuser.acl.controllers_annotations' );
+        $dirs  = [
+          config( 'laccuser.acl.controllers_annotations' ),
+          config( 'laccbook.acl.controllers_annotations' ),
+        ];
         $files = [];
         foreach ( $dirs as $dir ):
             foreach ( \File::allFiles( $dir ) as $file ):
