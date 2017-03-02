@@ -2,7 +2,7 @@
 namespace LaccUser\Console;
 
 use Illuminate\Console\Command;
-use LaccUser\Annotations\PermissionReader;
+use LaccUser\Facade\PermissionReader;
 use LaccUser\Repositories\PermissionRepository;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
@@ -29,21 +29,14 @@ class CreatePermissionCommand extends Command
     protected $repository;
 
     /**
-     * @var PermissionReader
-     */
-    protected $reader;
-
-    /**
      * CreatePermissionCommand constructor.
      *
      * @param PermissionRepository $repository
-     * @param PermissionReader     $reader
      */
-    public function __construct( PermissionRepository $repository, PermissionReader $reader )
+    public function __construct( PermissionRepository $repository )
     {
         parent::__construct();
         $this->repository = $repository;
-        $this->reader     = $reader;
     }
 
     /**
@@ -53,7 +46,7 @@ class CreatePermissionCommand extends Command
      */
     public function fire()
     {
-        $permissions = $this->reader->getPermissions();
+        $permissions = PermissionReader::getPermissions();
         foreach ( $permissions as $permission ):
             if ( !$this->existsPermission( $permission ) ) {
                 $this->repository->create( $permission );
